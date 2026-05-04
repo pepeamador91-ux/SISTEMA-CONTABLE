@@ -73,7 +73,6 @@ Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy'])->name('em
 
 // Rutas para Descargas
 Route::get('/descargas', [DescargaController::class, 'index'])->name('descargas.index');
-Route::post('/descargas', [DescargaController::class, 'procesar'])->name('descargas.procesar');
 Route::post('/descargas/procesar', [DescargaController::class, 'procesar'])->name('descargas.procesar');
 
 // Ruta para conectar con el SAT
