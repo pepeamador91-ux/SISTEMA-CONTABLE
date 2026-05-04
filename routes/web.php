@@ -5,7 +5,10 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Http\Controllers\UserController; 
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\DescargaController;
+use App\Http\Controllers\SatController;
 
 // 1. Ruta para VER la pantalla de Login
 Route::get('/', function () {
@@ -48,7 +51,7 @@ Route::post('/logout', function (Request $request) {
 })->name('logout');
 
 // 6. Ruta para VER el listado de Usuarios
-Route::get('/usuarios', [DashboardController::class, 'usersIndex'])->name('usuarios.index');
+Route::get('/usuarios', [DashboardController::class, 'index'])->name('usuarios.index');
 
 // 7. Ruta para CREAR un nuevo Usuario 
 // El nombre 'usuarios.store' es el que invoca tu formulario
@@ -59,3 +62,20 @@ Route::put('/usuarios/{id}', [UserController::class, 'update'])->name('usuarios.
 
 // 9. Ruta para ELIMINAR un Usuario (SOFT DELETE)
 Route::delete('/usuarios/{id}', [UserController::class, 'destroy'])->name('usuarios.destroy');
+
+Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
+
+// Rutas para Empresas
+Route::post('/empresas', [EmpresaController::class, 'store'])->name('empresas.store');
+Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
+Route::put('/empresas/{empresa}', [EmpresaController::class, 'update'])->name('empresas.update');
+Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy'])->name('empresas.destroy');
+
+// Rutas para Descargas
+Route::get('/descargas', [DescargaController::class, 'index'])->name('descargas.index');
+Route::post('/descargas', [DescargaController::class, 'procesar'])->name('descargas.procesar');
+Route::post('/descargas/procesar', [DescargaController::class, 'procesar'])->name('descargas.procesar');
+
+// Ruta para conectar con el SAT
+Route::get('/sat', [SatController::class, 'conectarSat'])->name('sat.conectar');
+Route::get('/probar-sat', [App\Http\Controllers\SatController::class, 'conectarSat']);

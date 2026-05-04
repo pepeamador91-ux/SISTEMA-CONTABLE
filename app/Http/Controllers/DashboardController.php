@@ -15,7 +15,7 @@ class DashboardController extends Controller
             return redirect()->route('login');
         }
 
-        $usuario = Auth::user()->name; 
+        $usuario = Auth::user(); 
         return view('dashboard', compact('usuario'));
     }
 
@@ -29,7 +29,7 @@ class DashboardController extends Controller
         }
 
         return view('profile.edit', [
-            'usuario' => $user->name,
+            'usuario' => $user,
             'email' => $user->email
         ]);
     }

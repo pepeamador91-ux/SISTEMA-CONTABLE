@@ -15,6 +15,11 @@
             <span class="material-symbols-outlined text-slate-400">dashboard</span>
             <span class="text-sm font-medium">Inicio</span>
         </a>
+        <a href="{{route('descargas.index')}}"
+           class="flex items-center gap-3 py-2 px-3 rounded hover:bg-slate-800 transition text-white {{ request()->routeIs('descargas.index') ? 'bg-slate-800' : '' }}">
+            <span class="material-symbols-outlined text-slate-400">download</span>
+            <span class="text-sm font-medium">Descargas</span>
+        </a>  
         <div x-data="{ configOpen: false }">
             <button @click="configOpen = !configOpen" class="w-full flex items-center justify-between py-2 px-3 rounded hover:bg-slate-800 transition text-white">
                 <div class="flex items-center gap-3">
@@ -25,6 +30,7 @@
             </button>
             <div x-show="configOpen" x-transition class="ml-9 mt-2 space-y-1 border-l border-slate-700">
                 <a href="{{ route('usuarios.index') }}" class="block py-2 px-4 text- xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded transition">Usuarios</a>
+                <a href="{{ route('empresas.index') }}" class="block py-2 px-4 text- xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded transition">Empresas</a>
             </div>
         </div>
     </nav>

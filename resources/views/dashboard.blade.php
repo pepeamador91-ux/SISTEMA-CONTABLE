@@ -12,7 +12,7 @@
 
         <!-- Contenido Variable -->
         <main class="flex-1 p-8 overflow-y-auto">
-            <h2 class="text-2xl font-bold text-slate-800 uppercase">Bienvenido {{ $usuario }}</h2>
+            <h2 class="text-2xl font-bold text-slate-800 uppercase">Bienvenido {{ $usuario->name }}</h2>
             <p>Al sistema para calcular los impuestos.</p>
         </main>
     </div>

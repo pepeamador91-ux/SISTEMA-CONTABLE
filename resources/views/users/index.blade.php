@@ -1,12 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Se agregan variables al x-data para manejar el modo edición y los datos del formulario -->
+<!-- Se mantienen todas las variables originales en el x-data -->
 <div class="flex h-screen overflow-hidden" 
      x-data="{ 
         sidebarOpen: true, 
         modalOpen: false, 
         editMode: false,
+        search: '',
         actionUrl: '{{ route('usuarios.store') }}',
         formData: { name: '', email: '', role: 'usuario', label: 'Usuario Estándar' }
      }">
@@ -53,7 +54,8 @@
                     <div class="p-4 border-b border-slate-100 flex items-center justify-end bg-white rounded-t-2xl">
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-sm">search</span>
-                            <input type="text" placeholder="Buscar usuario..." class="pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-blue-500/20 w-64">
+                            <!-- Se anexa x-model para que la búsqueda funcione -->
+                            <input type="text" x-model="search" placeholder="Buscar usuario..." class="pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-blue-500/20 w-64">
                         </div>
                     </div>
 
@@ -70,7 +72,9 @@
                             </thead>
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($usuariosListado as $u)
-                                <tr class="hover:bg-blue-50/30 transition-colors">
+                                <!-- Se anexa el x-show para filtrar dinámicamente -->
+                                <tr x-show="search === '' || `{{ strtolower($u->name) }} {{ strtolower($u->email) }}`.includes(search.toLowerCase())" 
+                                    class="hover:bg-blue-50/30 transition-colors">
                                     <td class="p-3 text-xs font-bold text-slate-400">#{{ $u->id }}</td>
                                     <td class="p-3 text-xs font-bold text-slate-700 uppercase">{{ $u->name }}</td>
                                     <td class="p-3 text-xs text-slate-600">{{ $u->email }}</td>
@@ -81,7 +85,7 @@
                                     </td>
                                     <td class="p-3">
                                         <div class="flex justify-center gap-1">
-                                            <!-- Botón Editar: Carga datos en formData y activa editMode -->
+                                            <!-- Botón Editar -->
                                             <button @click="
                                                 editMode = true; 
                                                 modalOpen = true; 
@@ -95,22 +99,24 @@
                                                 class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Editar">
                                                 <span class="material-symbols-outlined text-lg">edit</span>
                                             </button>
-<form action="{{ route('usuarios.destroy', $u->id) }}" method="POST" class="inline-block">
-            @csrf
-            @method('DELETE')
-            <button type="submit" 
-                    onclick="return confirm('¿Estás seguro de que deseas eliminar a {{ $u->name }}? El registro se conservará en el historial pero ya no aparecerá en esta lista.')"
-                    class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition" 
-                    title="Eliminar">
-                <span class="material-symbols-outlined text-lg">delete</span>
-            </button>
-        </form>
+                                            
+                                            <form action="{{ route('usuarios.destroy', $u->id) }}" method="POST" class="inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" 
+                                                        onclick="return confirm('¿Estás seguro de que deseas eliminar a {{ $u->name }}? El registro se conservará en el historial pero ya no aparecerá en esta lista.')"
+                                                        class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition" 
+                                                        title="Eliminar">
+                                                    <span class="material-symbols-outlined text-lg">delete</span>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        <x-paginador :coleccion="$usuariosListado" />
                     </div>
                 </div>
             </div>
@@ -137,7 +143,6 @@
                 <!-- Formulario Dinámico -->
                 <form :action="actionUrl" method="POST" class="p-6 space-y-4">
                     @csrf
-                    <!-- Agrega el método PUT solo si editMode es true -->
                     <template x-if="editMode">
                         @method('PUT')
                     </template>
@@ -159,8 +164,8 @@
                         <input type="password" name="password" :required="!editMode" autocomplete="new-password" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
                     </div>
 
-                    <!-- Selector de Roles -->
-                    <div x-data="{ search: '', open: false }">
+                    <!-- Selector de Roles Personalizado -->
+                    <div x-data="{ searchRole: '', open: false }">
                         <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Rol del Sistema</label>
                         <div class="relative">
                             <button type="button" @click="open = !open" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm flex justify-between items-center text-slate-700 font-bold">
@@ -169,11 +174,11 @@
                             </button>
 
                             <div x-show="open" @click.away="open = false" x-transition class="absolute left-0 right-0 z-[150] mt-1 bg-white border border-slate-200 rounded-xl shadow-2xl p-2">
-                                <input type="text" x-model="search" placeholder="Buscar rol..." class="w-full px-3 py-1.5 mb-2 bg-slate-50 border border-slate-100 rounded-lg text-xs outline-none">
+                                <input type="text" x-model="searchRole" placeholder="Buscar rol..." class="w-full px-3 py-1.5 mb-2 bg-slate-50 border border-slate-100 rounded-lg text-xs outline-none">
                                 <div class="overflow-y-auto max-h-[180px]">
                                     @foreach(\App\Models\User::$roles as $key => $roleName)
                                     <button type="button" 
-                                            x-show="'{{ strtolower($roleName) }}'.includes(search.toLowerCase())"
+                                            x-show="'{{ strtolower($roleName) }}'.includes(searchRole.toLowerCase())"
                                             @click="formData.role = '{{ $key }}'; formData.label = '{{ $roleName }}'; open = false"
                                             class="w-full text-left px-3 py-2 rounded-lg text-xs hover:bg-blue-50 font-bold text-slate-700 flex justify-between">
                                         <span>{{ $roleName }}</span>

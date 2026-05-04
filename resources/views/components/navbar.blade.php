@@ -13,7 +13,7 @@
             <span class="material-symbols-outlined text-4xl text-blue-600">account_circle</span>
             
             <div class="text-right leading-none">
-                <p class="text-xs font-bold text-slate-800">{{ $usuario ?? 'Admin' }}</p>
+                <p class="text-xs font-bold text-slate-800">{{ $usuario->name ?? 'Admin' }}</p>
                 <small class="text-[10px] text-blue-500 font-black uppercase tracking-tighter">Online</small>
             </div>
         </button>
