@@ -6,7 +6,8 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
+        "ext-zip": "*",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
         "phpcfdi/sat-ws-descarga-masiva": "^1.1"
